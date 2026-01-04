@@ -49,16 +49,16 @@ document
     e.preventDefault();
     const name = document.getElementById("name").value.trim();
     const email = document.getElementById("email").value.trim();
-    const subject = document.getElementById("subject").value.trim(); // Tambahkan subject
+    const subject = document.getElementById("subject").value.trim();
     const message = document.getElementById("message").value.trim();
 
     // Validasi semua field
     if (!name || !email || !subject || !message) {
-      alert("Please fill in all fields.");
+      showNotification("Please fill in all fields.", "error");
       return;
     }
     if (!/\S+@\S+\.\S+/.test(email)) {
-      alert("Please enter a valid email.");
+      showNotification("Please enter a valid email.", "error");
       return;
     }
 
@@ -67,31 +67,52 @@ document
       "https://script.google.com/macros/s/AKfycbzAvWHC5UmO6wTjuUp7pz-LZhffbC5ScyfEgruJ_GEcfHg-FrlhBC5J_QQ0_9NPo8afUA/exec"; // Ganti dengan URL Apps Script Anda
     fetch(scriptURL, {
       method: "POST",
-      mode: "no-cors", // Mengatasi CORS issues
+      mode: "no-cors",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ name, email, subject, message }),
     })
       .then(() => {
-        alert("Thank you for your message! It has been saved.");
-        this.reset(); // Reset form setelah sukses
+        showNotification(
+          "Thank you for your message! It has been saved.",
+          "success"
+        );
+        this.reset();
       })
       .catch((error) => {
         console.error("Error:", error);
-        alert("There was an error sending your message. Please try again.");
+        showNotification(
+          "There was an error sending your message. Please try again.",
+          "error"
+        );
       });
   });
 
-// Back to top button
-window.addEventListener("scroll", () => {
-  const backToTop = document.getElementById("back-to-top");
-  if (window.scrollY > 300) {
-    backToTop.style.display = "block";
-  } else {
-    backToTop.style.display = "none";
-  }
-});
+// Fungsi untuk menampilkan notifikasi
+function showNotification(message, type = "success") {
+  const notification = document.getElementById("notification");
+  const notificationMessage = document.getElementById("notification-message");
+
+  notificationMessage.textContent = message;
+  notification.className = `notification ${type}`; // Tambahkan class 'error' jika type error
+  notification.style.display = "block";
+
+  // Auto-hide setelah 5 detik
+  setTimeout(() => {
+    closeNotification();
+  }, 5000);
+}
+
+// Fungsi untuk menutup notifikasi
+function closeNotification() {
+  const notification = document.getElementById("notification");
+  notification.classList.add("hide");
+  setTimeout(() => {
+    notification.style.display = "none";
+    notification.classList.remove("hide");
+  }, 500); // Tunggu animasi fade-out selesai
+}
 
 document.getElementById("back-to-top").addEventListener("click", () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
