@@ -75,7 +75,7 @@ nav {
 
 /* Hero Section */
 .hero {
-  background-image: url(https://png.pngtree.com/thumb_back/fh260/background/20240610/pngtree-computer-of-a-programmer-with-lines-code-of-software-image_15746003.jpg);
+  background-image: url(image/christopher-gower-m_HRfLhgABo-unsplash.jpg);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -86,6 +86,21 @@ nav {
   justify-content: center;
   text-align: center;
   padding-top: 80px;
+  position: relative;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.hero-content {
+  z-index: 10;
 }
 
 .hero-content h1 {
