@@ -42,16 +42,18 @@ window.onclick = function (event) {
   }
 };
 
-// Contact form submission with validation
+// Contact form submission with validation and Google Sheets integration
 document
   .getElementById("contact-form")
   .addEventListener("submit", function (e) {
     e.preventDefault();
     const name = document.getElementById("name").value.trim();
     const email = document.getElementById("email").value.trim();
+    const subject = document.getElementById("subject").value.trim(); // Tambahkan subject
     const message = document.getElementById("message").value.trim();
 
-    if (!name || !email || !message) {
+    // Validasi semua field
+    if (!name || !email || !subject || !message) {
       alert("Please fill in all fields.");
       return;
     }
@@ -59,8 +61,26 @@ document
       alert("Please enter a valid email.");
       return;
     }
-    alert("Thank you for your message! I will get back to you soon.");
-    this.reset();
+
+    // Kirim data ke Google Sheets via Apps Script
+    const scriptURL =
+      "https://script.google.com/macros/s/AKfycbzAvWHC5UmO6wTjuUp7pz-LZhffbC5ScyfEgruJ_GEcfHg-FrlhBC5J_QQ0_9NPo8afUA/exec"; // Ganti dengan URL Apps Script Anda
+    fetch(scriptURL, {
+      method: "POST",
+      mode: "no-cors", // Mengatasi CORS issues
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, email, subject, message }),
+    })
+      .then(() => {
+        alert("Thank you for your message! It has been saved.");
+        this.reset(); // Reset form setelah sukses
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("There was an error sending your message. Please try again.");
+      });
   });
 
 // Back to top button
